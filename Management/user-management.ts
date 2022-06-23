@@ -54,4 +54,12 @@ export class UserManagement implements IManagement<User> {
         }
         return index;
     }
+    finByPhoneNumber(phoneNumber: string):User| null{
+        for (let user of UserManagement.users) {
+            if(user.phoneNumber == phoneNumber){
+                return user;
+            }
+        }
+        return null;
+    }
 }
