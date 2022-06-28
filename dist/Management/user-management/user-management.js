@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserManagement = void 0;
-const e_role_1 = require("./../model/e-role");
-const User_1 = require("./../model/User");
+const User_1 = require("./../../model/User");
+const e_role_1 = require("./../../model/e-role");
 class UserManagement {
     constructor() {
         let admin = new User_1.User('admin', 'admin', 'admin@gmail.com', 'admin');
@@ -56,6 +56,19 @@ class UserManagement {
             }
         }
         return null;
+    }
+    isLogin(username, password) {
+        for (const user of UserManagement.users) {
+            if (username == user.username && password == user.Password) {
+                return user;
+            }
+        }
+        return null;
+    }
+    findByAge(age) {
+        return age;
+    }
+    sortByAge() {
     }
 }
 exports.UserManagement = UserManagement;

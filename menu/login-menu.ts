@@ -1,12 +1,14 @@
-import { UserManagement } from './../Management/user-management';
+import { PersonMenu } from './person-menu';
+import { ROLE } from './../model/e-role';
 import * as rl from 'readline-sync';
 import { User } from '../model/User';
+import { UserManagement } from '../Management/user-management/user-management';
 
 enum Loginchoice {
     LOGIN = 1,
     REGISTER = 2
 }
-
+const personMenu = new PersonMenu();
 export class LoginMenu {
     private userManagement = new UserManagement();
     run() {
@@ -22,22 +24,50 @@ export class LoginMenu {
             switch (choice) {
                 case Loginchoice.LOGIN: {
                     console.log('------------------ Login --------------------');
+                    this.loginForm();
                     break;
                 }
 
-                
+
                 case Loginchoice.REGISTER: {
                     console.log('------------------ Register --------------------');
-                    let user = this.createUser();
-                    this.userManagement.createNew(user);
-                    console.log('Register successfully created');
-                    console.log('------------------------------------------------------------------------------------------------');
+                    this.registerForm();
 
                     break;
                 }
             }
         }
         while (choice != 0);
+
+    }
+    registerForm() {
+        let user = this.createUser();
+        this.userManagement.createNew(user);
+        console.log('Register successfully created');
+        console.log('------------------------------------------------------------------------------------------------');
+    }
+    loginForm() {
+    
+        let username = rl.question('Enter your username: ');
+        let password = rl.question('Enter your password: ');
+        let currentUserName = this.userManagement.isLogin(username, password);
+        
+        if (currentUserName) {
+            if (currentUserName.role == ROLE.ADMIN) {
+                personMenu.runforIdol();
+                
+            }
+            else {
+                console.log('---List Idol My Company---');
+                console.log('1. Show list idol from Korean');
+                console.log('2. Show list idol from Japanese');
+                console.log('3. Show list other Idols');
+                console.log('0. Exit'); 
+            }
+        
+        }else {
+            console.log('Username or password is incorrect');
+        }
     }
 
     createUser(): User {
@@ -54,8 +84,6 @@ export class LoginMenu {
 
         let user = new User(username, password, phoneNumber, name);
         return user;
-
-
 
 
     }

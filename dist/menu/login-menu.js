@@ -24,14 +24,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LoginMenu = void 0;
-const user_management_1 = require("./../Management/user-management");
+const person_menu_1 = require("./person-menu");
+const e_role_1 = require("./../model/e-role");
 const rl = __importStar(require("readline-sync"));
 const User_1 = require("../model/User");
+const user_management_1 = require("../Management/user-management/user-management");
 var Loginchoice;
 (function (Loginchoice) {
     Loginchoice[Loginchoice["LOGIN"] = 1] = "LOGIN";
     Loginchoice[Loginchoice["REGISTER"] = 2] = "REGISTER";
 })(Loginchoice || (Loginchoice = {}));
+const personMenu = new person_menu_1.PersonMenu();
 class LoginMenu {
     constructor() {
         this.userManagement = new user_management_1.UserManagement();
@@ -47,18 +50,42 @@ class LoginMenu {
             switch (choice) {
                 case Loginchoice.LOGIN: {
                     console.log('------------------ Login --------------------');
+                    this.loginForm();
                     break;
                 }
                 case Loginchoice.REGISTER: {
                     console.log('------------------ Register --------------------');
-                    let user = this.createUser();
-                    this.userManagement.createNew(user);
-                    console.log('Register successfully created');
-                    console.log('------------------------------------------------------------------------------------------------');
+                    this.registerForm();
                     break;
                 }
             }
         } while (choice != 0);
+    }
+    registerForm() {
+        let user = this.createUser();
+        this.userManagement.createNew(user);
+        console.log('Register successfully created');
+        console.log('------------------------------------------------------------------------------------------------');
+    }
+    loginForm() {
+        let username = rl.question('Enter your username: ');
+        let password = rl.question('Enter your password: ');
+        let currentUserName = this.userManagement.isLogin(username, password);
+        if (currentUserName) {
+            if (currentUserName.role == e_role_1.ROLE.ADMIN) {
+                personMenu.runforIdol();
+            }
+            else {
+                console.log('---List Idol My Company---');
+                console.log('1. Show list idol from Korean');
+                console.log('2. Show list idol from Japanese');
+                console.log('3. Show list other Idols');
+                console.log('0. Exit');
+            }
+        }
+        else {
+            console.log('Username or password is incorrect');
+        }
     }
     createUser() {
         let username = this.createUserName();
